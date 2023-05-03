@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 import { publicRequest } from "../requestMethod";
 
 import {
@@ -17,6 +18,11 @@ export const login = async (dispatch, user) => {
     window.location.href = "/";
   } catch (error) {
     dispatch(loginFailed());
+    toast.error("Invalid Email or Password", {
+      duration: 4000,
+      position: "top-center",
+      style: { background: "red", color: "white" },
+    });
   }
 };
 

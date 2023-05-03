@@ -153,6 +153,7 @@ exports.updateUser = async (req, res) => {
 // delete account user
 
 exports.deleteAccount = async (req, res) => {
+  app.listen(port, () => console.log("server is ready"));
   try {
     await UserModel.findByIdAndDelete(req.params.id);
     res.json("User is deleted");
@@ -193,5 +194,33 @@ exports.countUsers = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   const users = await UserModel.find();
-  res.send(users);
+  if (users) {
+    res.status(200).json(users);
+  } else {
+    res.status(500).json({ message: "Error" });
+  }
+};
+
+exports.getOneUser = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await UserModel.findById(id);
+    res.send(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.updateRole = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const updateRole = await UserModel.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(201).json(updateRole);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
 };

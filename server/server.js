@@ -10,12 +10,23 @@ const cookieSession = require("cookie-session");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const CategoryRoute = require("./router/category");
 const evenementRoute = require("./router/evenment");
+const cookieParser = require("cookie-parser");
+const messageRoute = require("./router/message");
 
 const app = express();
 
-mongoose.connect(process.env.MONGO_URL);
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => {
+    console.log("mongo db connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const port = process.env.PORT || 8800;
+
+app.use(cookieParser());
 
 app.use(
   cookieSession({
@@ -50,8 +61,6 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
   }
 });
 
-app.listen(port, () => console.log("server is ready"));
-
 // routers
 
 passport.use(
@@ -82,3 +91,5 @@ app.use("/auth", userRoute);
 app.use("/user", userInfoRoute);
 app.use("/category", CategoryRoute);
 app.use("/even", evenementRoute);
+app.use("/message", messageRoute);
+app.listen(port, () => console.log("server is ready"));
